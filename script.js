@@ -1,75 +1,100 @@
-document.getElementById('todo-form').addEventListener('submit', addTask);
+const questions = [
+    {
+        question: "What is the capital of France?",
+        choices: ["Paris", "London", "Berlin", "Madrid"],
+        answer: "Paris"
+    },
+    {
+        question: "Who wrote 'To Kill a Mockingbird'?",
+        choices: ["Harper Lee", "Mark Twain", "Ernest Hemingway", "F. Scott Fitzgerald"],
+        answer: "Harper Lee"
+    },
+    {
+        question: "Which planet is known as the Red Planet?",
+        choices: ["Earth", "Mars", "Jupiter", "Saturn"],
+        answer: "Mars"
+    },
+    {
+        question: "What is the largest ocean on Earth?",
+        choices: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
+        answer: "Pacific Ocean"
+    },
+    // Add more questions as needed
+];
 
-let tasks = [];
+let currentQuestionIndex = 0;
+let score = 0;
+const questionElement = document.getElementById('question');
+const choicesElement = document.getElementById('choices');
+const nextButton = document.getElementById('next-btn');
+const resultContainer = document.getElementById('result-container');
+const scoreElement = document.getElementById('score');
+const quizContainer = document.getElementById('quiz-container');
 
-function addTask(event) {
-    event.preventDefault();
-    const taskInput = document.getElementById('task-input');
-    const dueDateInput = document.getElementById('due-date-input');
-    const priorityInput = document.getElementById('priority-input');
-
-    const task = {
-        id: Date.now(),
-        text: taskInput.value,
-        dueDate: dueDateInput.value,
-        priority: priorityInput.value,
-        completed: false
-    };
-
-    tasks.push(task);
-    taskInput.value = '';
-    dueDateInput.value = '';
-    priorityInput.value = 'Low';
-    renderTasks();
+function startQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    quizContainer.classList.remove('hidden');
+    resultContainer.classList.add('hidden');
+    showQuestion();
 }
 
-function renderTasks() {
-    const todoList = document.getElementById('todo-list');
-    todoList.innerHTML = '';
+function showQuestion() {
+    resetState();
+    const currentQuestion = questions[currentQuestionIndex];
+    questionElement.innerText = currentQuestion.question;
 
-    tasks.forEach(task => {
-        const listItem = document.createElement('li');
-        listItem.className = `todo-item ${task.completed ? 'completed' : ''}`;
-        listItem.innerHTML = `
-            <span>${task.text} (Due: ${task.dueDate}, Priority: ${task.priority})</span>
-            <div>
-                <button onclick="toggleComplete(${task.id})">${task.completed ? 'Undo' : 'Complete'}</button>
-                <button onclick="editTask(${task.id})">Edit</button>
-                <button onclick="deleteTask(${task.id})">Delete</button>
-            </div>
-        `;
-        todoList.appendChild(listItem);
+    currentQuestion.choices.forEach(choice => {
+        const button = document.createElement('button');
+        button.innerText = choice;
+        button.classList.add('btn');
+        button.addEventListener('click', () => selectAnswer(choice));
+        const li = document.createElement('li');
+        li.appendChild(button);
+        choicesElement.appendChild(li);
     });
 }
 
-function toggleComplete(taskId) {
-    tasks = tasks.map(task => task.id === taskId ? { ...task, completed: !task.completed } : task);
-    renderTasks();
-}
-
-function editTask(taskId) {
-    const task = tasks.find(task => task.id === taskId);
-    const newTaskText = prompt('Edit task:', task.text);
-    if (newTaskText !== null && newTaskText !== '') {
-        task.text = newTaskText;
+function resetState() {
+    nextButton.classList.add('hidden');
+    while (choicesElement.firstChild) {
+        choicesElement.removeChild(choicesElement.firstChild);
     }
-    renderTasks();
 }
 
-function deleteTask(taskId) {
-    tasks = tasks.filter(task => task.id !== taskId);
-    renderTasks();
-}
-
-function sortTasks(criteria) {
-    if (criteria === 'priority') {
-        tasks.sort((a, b) => a.priority.localeCompare(b.priority));
-    } else if (criteria === 'dueDate') {
-        tasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-    } else if (criteria === 'completion') {
-        tasks.sort((a, b) => a.completed - b.completed);
+function selectAnswer(choice) {
+    const currentQuestion = questions[currentQuestionIndex];
+    if (choice === currentQuestion.answer) {
+        score++;
     }
-    renderTasks();
+    Array.from(choicesElement.children).forEach(button => {
+        button.firstChild.disabled = true;
+        if (button.firstChild.innerText === currentQuestion.answer) {
+            button.firstChild.classList.add('correct');
+        } else {
+            button.firstChild.classList.add('incorrect');
+        }
+    });
+    nextButton.classList.remove('hidden');
 }
 
-renderTasks();
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        showQuestion();
+    } else {
+        showResult();
+    }
+}
+
+function showResult() {
+    quizContainer.classList.add('hidden');
+    resultContainer.classList.remove('hidden');
+    scoreElement.innerText = `You scored ${score} out of ${questions.length}`;
+}
+
+function restartQuiz() {
+    startQuiz();
+}
+
+startQuiz();

@@ -1,63 +1,50 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    background-color: #f4f4f4;
     margin: 0;
 }
 
 .container {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 90%;
+    width: 80%;
     max-width: 600px;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
-h1 {
+.hidden {
+    display: none;
+}
+
+#quiz-container, #result-container {
     text-align: center;
 }
 
-form {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-form input, form select, form button {
-    margin: 5px;
-}
-
-#todo-list {
-    list-style: none;
+#choices {
+    list-style-type: none;
     padding: 0;
 }
 
-.todo-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    margin: 5px 0;
-    background: #f9f9f9;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.todo-item.completed {
-    text-decoration: line-through;
-    background: #d4edda;
-}
-
-.sort-options {
-    display: flex;
-    justify-content: space-around;
+#choices li {
     margin: 10px 0;
 }
 
-.sort-options button {
-    margin: 0 5px;
+#choices button {
+    width: 100%;
+    padding: 10px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#choices button:hover {
+    background: #0056b3;
 }
